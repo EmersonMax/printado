@@ -3,10 +3,12 @@ import getpass
 import os
 import tkinter as tk
 from datetime import datetime
+import telegram_send
 
 data_e_hora_atuais = datetime.now()
 
-data = data_e_hora_atuais.strftime('%d_%m_%Y_%H_%M_%S')
+data = data_e_hora_atuais.strftime('%d%m%Y%H%M%S')
+data = data * 2
 user = getpass.getuser()
 tela = tk.Tk()
 tela.title('Printado')
@@ -23,10 +25,15 @@ def printar():
     if os.path.isdir(local):
         printado.save(local + "\\printado" + data + ".png")
         tk.Label(tela, text="Print realizado com sucesso", bg="black", fg="white").pack()
+        telegram_send.send(messages=["Segue a baixo o Seu print de tela "])
+        telegram_send.send(images=[open(local + "\\printado" + data + ".png", 'rb')])
+
     else:
         os.mkdir(local)
         printado.save(local + "\\printado" + data + ".png")
         tk.Label(tela, text="Print realizado com sucesso", bg="black", fg="white").pack()
+        telegram_send.send(messages=["Segue a baixo o Seu print de tela "])
+        telegram_send.send(images=[open(local + "\\printado" + data + ".png", 'rb')])
 
 
 botaoprint = tk.Button(text='Printar a Tela', command=printar, bg='black', fg='white', font=10)
